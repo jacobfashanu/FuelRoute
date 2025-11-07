@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.Data.Common;
 using System.Runtime.CompilerServices;
 
 namespace FuelRoute.Core.Models
 {
     public class User
     {
+        public int Id { get; set; }
         [Required, StringLength(35)]
         public string FirstName { get; set; } = string.Empty;
         [Required, StringLength(35)]
