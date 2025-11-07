@@ -7,5 +7,5 @@ namespace FuelRoute.API.Controllers;
 
 public class AuthController
 {
-
+    
 }

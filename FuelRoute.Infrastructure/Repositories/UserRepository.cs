@@ -21,8 +21,7 @@ namespace FuelRoute.Infrastructure.Repositories
         // READ ALL USERS
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            // Converts all records in the 'Users' DbSet into a list asynchronously.
-            // Equivalent SQL: SELECT * FROM Users;
+            // Converts all records in the 'Users' DbSet into a list asynchronously
             return await _context.Users.ToListAsync();
         }
 
