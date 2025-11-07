@@ -12,7 +12,7 @@ namespace FuelRoute.Infrastructure.Repositories
         private readonly FuelRouteDbContext _context;
 
         // Constructor Dependency Injection:
-        // The context is injected by the DI container when UserRepository is created.
+        // The context is injected by the DI container when UserRepository is created.  
         public UserRepository(FuelRouteDbContext context)
         {
             _context = context;
