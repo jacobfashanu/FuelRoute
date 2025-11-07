@@ -9,4 +9,4 @@ namespace FuelRoute.Core.Entities
         public double Longitude { get; set; }
         public string Address { get; set; } = "";
     }
-}
+} 
