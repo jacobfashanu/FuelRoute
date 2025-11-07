@@ -22,5 +22,6 @@ namespace FuelRoute.Core.Models
         ErrorMessage = "Password must include upper, lower, number, and special character.")]
         public string Password { get; set; } = string.Empty;
         // Add hashing and salting later
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
