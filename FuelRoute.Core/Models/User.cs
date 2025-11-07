@@ -6,7 +6,7 @@ namespace FuelRoute.Core.Models
 {
     public class User
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         [Required, StringLength(35)]
         public string FirstName { get; set; } = string.Empty;
         [Required, StringLength(35)]
