@@ -5,7 +5,7 @@ namespace FuelRoute.Core.Models;
 public class Car
 {
     [Required(ErrorMessage = "Id is required")]
-    public int UserId { get; set; }
+    public int Id { get; set; }
 
     [Required(ErrorMessage = "Email is required")]
     [EmailAddress]
