@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FuelRoute.Infrastructure.Repositories
 {
-    // The UserRepository implements the IUserRepository interface.
-    // It contains EF Core logic to perform operations on Users.
+    // EF Core implementation of IUserRepository.
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
@@ -33,7 +32,7 @@ namespace FuelRoute.Infrastructure.Repositories
             return await _context.Users.FindAsync(id);
         }
 
-        // READ ONE USER BY EMAIL (for login)
+        // READ ONE USER BY EMAIL (for login/register)
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users

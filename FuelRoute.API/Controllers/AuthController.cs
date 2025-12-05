@@ -1,13 +1,12 @@
-using System.Threading.Tasks;
-using FuelRoute.Core.DTOs;
-using FuelRoute.Core.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FuelRoute.Core.Interfaces;
+using FuelRoute.Core.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FuelRoute.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -18,33 +17,29 @@ namespace FuelRoute.API.Controllers
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        public async Task<IActionResult> Login(LoginDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _authService.LoginAsync(dto);
-
-            if (!result.Success)
-                return Unauthorized(result);
-
-            return Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] UserCreateDto dto)
+        public async Task<IActionResult> Register(UserCreateDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _authService.RegisterAsync(dto);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
 
-            if (!result.Success)
-                return BadRequest(result);
-
-            return Ok(result);
+        // 🔐 PROTECTED ENDPOINT
+        [Authorize]
+        [HttpGet("protected")]
+        public IActionResult ProtectedTest()
+        {
+            return Ok(new
+            {
+                Message = "You accessed a protected endpoint!",
+                Claims = User.Claims.Select(c => new { c.Type, c.Value })
+            });
         }
     }
 }
