@@ -2,7 +2,127 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4 mb-4">FuelRoute</h1>
+    <p class="lead mb-5">Find the best gas prices along your route</p>
 </div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h3 class="card-title text-center mb-4">Plan Your Route</h3>
+                    
+                    <form asp-controller="GasStations" asp-action="Results" method="get">
+                        <div class="mb-4">
+                            <label for="startLocation" class="form-label">
+                                <i class="bi bi-geo-alt-fill text-primary"></i> Start Location
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="startLocation" 
+                                   name="startLocation" 
+                                   placeholder="e.g., Mississauga, ON"
+                                   required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="endLocation" class="form-label">
+                                <i class="bi bi-geo-fill text-danger"></i> End Location
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="endLocation" 
+                                   name="endLocation" 
+                                   placeholder="e.g., Oakville, ON"
+                                   required>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-search"></i> Find Gas Stations
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> 
+                            Enter your start and end locations to find the cheapest gas stations along your route
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-fuel-pump-fill text-primary" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-3">Best Prices</h5>
+                            <p class="card-text">Find the lowest gas prices along your route</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-piggy-bank-fill text-success" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-3">Save Money</h5>
+                            <p class="card-text">See estimated savings on every fill-up</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Searches -->
+            <div class="card mt-4 bg-light">
+                <div class="card-body">
+                    <h6 class="card-title">Popular Routes:</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="/GasStations/Results?startLocation=Mississauga&endLocation=Oakville" 
+                           class="btn btn-sm btn-outline-primary">
+                            Mississauga → Oakville
+                        </a>
+                        <a href="/GasStations/Results?startLocation=Toronto&endLocation=Mississauga" 
+                           class="btn btn-sm btn-outline-primary">
+                            Toronto → Mississauga
+                        </a>
+                        <a href="/GasStations/Results?startLocation=Brampton&endLocation=Toronto" 
+                           class="btn btn-sm btn-outline-primary">
+                            Brampton → Toronto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        transition: transform 0.2s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: scale(1.02);
+    }
+</style>
