@@ -10,7 +10,9 @@ using FuelRoute.Core.Models;
 namespace FuelRoute.Infrastructure.Services
 {
     public class GasStationService : IGasStationService
+    // 2 major jobs this class performs: 1) Convert address to number coordinates 2) Pick the best Gas Station
     {
+        // Dependency Injection(Injects the repo that loads the gas station data from the JSON)
         private readonly IGasStationRepository _repo;
 
         public GasStationService(IGasStationRepository repo)
@@ -18,13 +20,16 @@ namespace FuelRoute.Infrastructure.Services
             _repo = repo;
         }
 
-        // ----------------------------------------------------
+       
         // Main method: choose gas station based on distance and price
-        // ----------------------------------------------------
+       
         public Task<RouteResult?> GetBestStationAsync(RouteRequest req)
         {
-            var stations = _repo.GetAll();
+            var stations = _repo.GetAll(); // Loads all station data
 
+            //best variable first calculates the distance between each gas station and the start and end location
+            //then it given the distances, it computes a score for each station. The lower the better
+            //Then the best station is selected
             var best = stations
                 .Select(s => new
                 {
@@ -46,6 +51,7 @@ namespace FuelRoute.Infrastructure.Services
             if (best == null)
                 return Task.FromResult<RouteResult?>(null);
 
+            // This builds the return object that will be passed to the UI and displayed
             return Task.FromResult<RouteResult?>(new RouteResult
             {
                 Station = best.Station,
@@ -59,13 +65,11 @@ namespace FuelRoute.Infrastructure.Services
             });
         }
 
-        // ----------------------------------------------------
-        // Address → Coordinates (Geocoding)
-        // Uses FREE OpenStreetMap Nominatim API
-        // Ontario + Canada enforced strictly
-        // ----------------------------------------------------
+        // This method converts the addresses into Latitude/Longitudinal coordinates
+        // It uses the Nominatim API, apart of OpenStreetMap API
         public async Task<(double lat, double lng)?> GeocodeAsync(string address)
         {
+            //Creates the client(user-agent) that makes the API call
             using var client = new HttpClient();
             client.DefaultRequestHeaders.UserAgent.ParseAdd("FuelRouteApp/1.0");
 
@@ -78,9 +82,9 @@ namespace FuelRoute.Infrastructure.Services
                 $"&limit=5" +           // get up to 5 options
                 $"&countrycodes=ca";     // only Canada
 
-            var json = await client.GetStringAsync(url);
+            var json = await client.GetStringAsync(url); // send request
 
-            var results = JsonSerializer.Deserialize<List<NominatimResult>>(json);
+            var results = JsonSerializer.Deserialize<List<NominatimResult>>(json); //deserialize the results
 
             if (results == null || results.Count == 0)
                 return null;
@@ -98,9 +102,9 @@ namespace FuelRoute.Infrastructure.Services
             return (double.Parse(best.lat), double.Parse(best.lon));
         }
 
-        // ----------------------------------------------------
+       
         // Helper classes to read Nominatim JSON
-        // ----------------------------------------------------
+    
         private class NominatimResult
         {
             public string? lat { get; set; }
@@ -117,9 +121,9 @@ namespace FuelRoute.Infrastructure.Services
             public string? village { get; set; }
         }
 
-        // ----------------------------------------------------
+        
         // Distance formula (Haversine)
-        // ----------------------------------------------------
+    
         private static double Distance(double lat1, double lon1, double lat2, double lon2)
         {
             const double R = 6371; // Earth radius in km

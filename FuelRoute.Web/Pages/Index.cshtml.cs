@@ -2,11 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http.Json;
 using System.Text.Json;
+using FuelRoute.Web.Models;
+
 
 namespace FuelRoute.Web.Pages
 {
     public class IndexModel : PageModel
     {
+        // Razor DI injects a HttpClientFactory
+        // This is used to send requests to the API layer
         private readonly IHttpClientFactory _httpClientFactory;
 
         public IndexModel(IHttpClientFactory httpClientFactory)
@@ -14,8 +18,7 @@ namespace FuelRoute.Web.Pages
             _httpClientFactory = httpClientFactory;
         }
 
-        [BindProperty]
-        public bool IsSearching { get; set; } = false;
+        //The followwing properties bind to the UI inputs
 
         [BindProperty]
         public string? ErrorMessage { get; set; }
@@ -28,21 +31,6 @@ namespace FuelRoute.Web.Pages
         public string EndLocation { get; set; } = string.Empty;
 
         public ApiResult? ApiResponse { get; set; }
-
-        public class ApiResult
-        {
-            public Station Station { get; set; }
-            public string MapsUrl { get; set; }
-            public double DistanceKmFromStart { get; set; }
-        }
-
-        public class Station
-        {
-            public string Name { get; set; }
-            public double Price { get; set; }
-            public double Lat { get; set; }
-            public double Lng { get; set; }
-        }
 
         public async Task<IActionResult> OnPost()
         {

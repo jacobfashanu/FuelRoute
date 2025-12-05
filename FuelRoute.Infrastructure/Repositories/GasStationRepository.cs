@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace FuelRoute.Infrastructure.Repositories
 {
-    public class GasStationRepository : IGasStationRepository
+    public class GasStationRepository : IGasStationRepository // Loads all gas station data from the local JSON file
     {
         private readonly List<GasStation> _stations;
 

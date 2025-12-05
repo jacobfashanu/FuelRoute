@@ -9,6 +9,8 @@ namespace FuelRoute.API.Controllers
     [Route("api/[controller]")]
     public class RouteController : ControllerBase
     {
+
+        // Dependency Injection
         private readonly IGasStationService _gasStationService;
 
         public RouteController(IGasStationService gasStationService)
@@ -16,9 +18,10 @@ namespace FuelRoute.API.Controllers
             _gasStationService = gasStationService;
         }
 
-        // -----------------------------
-        // 1️⃣ Existing Lat/Lng Endpoint
-        // -----------------------------
+        
+        // 1 Existing Lat/Lng Endpoint
+        // Accepts a Request body that contains the longitutde and latitude of both the start and end locations
+
         [HttpPost("suggest")]
         public async Task<IActionResult> Suggest([FromBody] RouteRequest request)
         {
@@ -33,9 +36,9 @@ namespace FuelRoute.API.Controllers
             return Ok(result);
         }
 
-        // ---------------------------------------
-        // 2️⃣ New Address-Based Suggestion Endpoint
-        // ---------------------------------------
+        
+        // 2 Address-Based Suggestion Endpoint
+        // This one takes in the address of both the start and end locations
         [HttpPost("suggest/address")]
         public async Task<IActionResult> SuggestAddress([FromBody] AddressRouteRequest req)
         {

@@ -1,6 +1,6 @@
 namespace FuelRoute.Core.Models
 {
-    public class RouteResult
+    public class RouteResult // this model represents the output returned to the frontend
     {
         public GasStation Station { get; set; }
 
@@ -8,7 +8,7 @@ namespace FuelRoute.Core.Models
 
         public double DistanceKmFromStart { get; set; }
 
-        // NEW FIELD NEEDED BY THE SERVICE
+        
         public double DistanceKmToEnd { get; set; }
     }
 }

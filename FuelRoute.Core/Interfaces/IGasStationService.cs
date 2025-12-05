@@ -3,11 +3,11 @@ using FuelRoute.Core.Models;
 
 namespace FuelRoute.Core.Interfaces
 {
-    public interface IGasStationService
+    public interface IGasStationService //Defines the contract for the implemented service of finding the correct gas station data.
     {
         Task<RouteResult?> GetBestStationAsync(RouteRequest request);
 
-        // NEW: for address support
+        
         Task<(double lat, double lng)?> GeocodeAsync(string address);
     }
 }

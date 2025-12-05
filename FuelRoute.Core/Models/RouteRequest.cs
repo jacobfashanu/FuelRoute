@@ -1,8 +1,9 @@
 namespace FuelRoute.Core.Models
 {
-    public class RouteRequest
+    public class RouteRequest // This model holds the coordinates of the start and end location
+    // The serbice uses these to compute a score that represents which gas station is the best option
     {
-        // Starting point
+        
         public double StartLat { get; set; }
         public double StartLng { get; set; }
 

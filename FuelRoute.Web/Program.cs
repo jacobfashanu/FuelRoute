@@ -1,11 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(); // Registers Razor Pages as the UI framework
 builder.Services.AddHttpClient("FuelRouteAPI", client =>
 {
     client.BaseAddress = new Uri("http://localhost:5218"); // your API URL
-});
+}); // Creates a client for making BackendAPI calls
 
 var app = builder.Build();
 
