@@ -1,0 +1,313 @@
+@model FuelRoute.Web.Models.GasStationDetailViewModel
+
+@{
+    ViewData["Title"] = "Gas Station Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="GasStations" asp-action="Results">Results</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Information Card -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-fuel-pump"></i> @Model.Brand
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="mb-3">@Model.Name</h4>
+                    
+                    <!-- Location Information -->
+                    <div class="mb-4">
+                        <h5><i class="bi bi-geo-alt-fill text-danger"></i> Location</h5>
+                        <p class="ms-4">
+                            @Model.Address<br />
+                            @Model.City, @Model.Province @Model.PostalCode
+                        </p>
+                        @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                        {
+                            <p class="ms-4">
+                                <i class="bi bi-telephone-fill"></i> <a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a>
+                            </p>
+                        }
+                    </div>
+
+                    <!-- Pricing Information -->
+                    <div class="mb-4 p-4 bg-light rounded border-start border-5 border-success">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-2">Current Price</h5>
+                                <h2 class="text-success mb-0">
+                                    <strong>$@Model.CurrentPrice</strong> <small class="text-muted">/L</small>
+                                </h2>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i> Last updated: @Model.LastUpdated.ToString("MMMM dd, yyyy - hh:mm tt")
+                                </small>
+                            </div>
+                            <div class="col-md-6">
+                                @if (Model.EstimatedSavings > 0)
+                                {
+                                    <div class="alert alert-success mb-0">
+                                        <h5 class="mb-1"><i class="bi bi-piggy-bank"></i> Estimated Savings</h5>
+                                        <h3 class="mb-0 text-success">$@Model.EstimatedSavings</h3>
+                                        <small>compared to route average</small>
+                                    </div>
+                                }
+                                else if (Model.EstimatedSavings < 0)
+                                {
+                                    <div class="alert alert-warning mb-0">
+                                        <h5 class="mb-1">Price Comparison</h5>
+                                        <p class="mb-0">$@Math.Abs(Model.EstimatedSavings) more than average</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info mb-0">
+                                        <p class="mb-0">Average price for this area</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Station Features -->
+                    <div class="mb-4">
+                        <h5><i class="bi bi-star-fill text-warning"></i> Station Features</h5>
+                        <div class="ms-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    @if (Model.Is24Hours)
+                                    {
+                                        <span class="badge bg-success me-2">
+                                            <i class="bi bi-clock-fill"></i> Open 24 Hours
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary me-2">
+                                            <i class="bi bi-clock"></i> Limited Hours
+                                        </span>
+                                    }
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-fuel-pump"></i> @Model.FuelType Fuel
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distance & Route Info -->
+                    <div class="mb-4">
+                        <h5><i class="bi bi-signpost-2-fill text-info"></i> Distance & Route</h5>
+                        <div class="ms-4">
+                            <p>
+                                <strong>Distance from your route:</strong> @Model.DistanceFromRoute km
+                                @if (Model.DistanceFromRoute <= 2)
+                                {
+                                    <span class="badge bg-success ms-2">Very Convenient</span>
+                                }
+                                else if (Model.DistanceFromRoute <= 5)
+                                {
+                                    <span class="badge bg-warning ms-2">Slight Detour</span>
+                                }
+                            </p>
+                            @if (Model.EstimatedDetourTime.HasValue)
+                            {
+                                <p>
+                                    <strong>Estimated detour time:</strong> @Model.EstimatedDetourTime minutes
+                                </p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=@Model.Latitude,@Model.Longitude" 
+                           target="_blank" 
+                           class="btn btn-success btn-lg">
+                            <i class="bi bi-map"></i> Open in Google Maps
+                        </a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=@Model.Latitude,@Model.Longitude" 
+                           target="_blank" 
+                           class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-geo-alt"></i> View Location
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Price Section -->
+            <div class="card shadow mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Report Price Update</h5>
+                </div>
+                <div class="card-body">
+                    <p>Noticed a different price? Help the community by reporting an update!</p>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportPriceModal">
+                        <i class="bi bi-flag-fill"></i> Report Current Price
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Map Preview Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-map"></i> Location Map</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="map" style="height: 300px; width: 100%;">
+                        <!-- Embedded Google Map -->
+                        <iframe width="100%" 
+                                height="300" 
+                                frameborder="0" 
+                                style="border:0"
+                                src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=@Model.Latitude,@Model.Longitude&zoom=15" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        Coordinates: @Model.Latitude, @Model.Longitude
+                    </small>
+                </div>
+            </div>
+
+            <!-- Quick Stats Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="bi bi-calculator"></i> Fuel Calculator</h5>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.UserCar != null)
+                    {
+                        <p><strong>Your Car:</strong> @ViewBag.UserCar.Make @ViewBag.UserCar.Model</p>
+                        <p><strong>Tank Capacity:</strong> @ViewBag.UserCar.TankCapacity L</p>
+                        <hr>
+                        <p class="mb-1"><strong>Fill-up Cost:</strong></p>
+                        <h4 class="text-primary">$@((Model.CurrentPrice * ViewBag.UserCar.TankCapacity).ToString("F2"))</h4>
+                    }
+                    else
+                    {
+                        <p>Add your car details to see personalized fuel calculations!</p>
+                        <a asp-controller="Cars" asp-action="Create" class="btn btn-sm btn-primary">Add Vehicle</a>
+                    }
+                </div>
+            </div>
+
+            <!-- Nearby Stations -->
+            @if (Model.NearbyStations != null && Model.NearbyStations.Any())
+            {
+                <div class="card shadow">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-pin-map"></i> Nearby Stations</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            @foreach (var nearby in Model.NearbyStations.Take(3))
+                            {
+                                <a asp-controller="GasStations" 
+                                   asp-action="Details" 
+                                   asp-route-id="@nearby.StationId" 
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@nearby.Brand</h6>
+                                        <small class="text-success">$@nearby.CurrentPrice/L</small>
+                                    </div>
+                                    <small class="text-muted">@nearby.DistanceFromRoute km away</small>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <a asp-controller="GasStations" asp-action="Results" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Results
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Report Price Modal -->
+<div class="modal fade" id="reportPriceModal" tabindex="-1" aria-labelledby="reportPriceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportPriceModalLabel">Report Current Price</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="GasStations" asp-action="ReportPrice" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="stationId" value="@Model.StationId" />
+                    
+                    <div class="mb-3">
+                        <label for="fuelType" class="form-label">Fuel Type</label>
+                        <select class="form-select" id="fuelType" name="fuelType" required>
+                            <option value="Regular">Regular</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Diesel">Diesel</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Current Price ($/L)</label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="price" 
+                               name="price" 
+                               step="0.001" 
+                               min="0" 
+                               max="5" 
+                               value="@Model.CurrentPrice"
+                               required>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <small><i class="bi bi-info-circle"></i> Your report helps keep our community informed with accurate prices!</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-start {
+        border-left-width: 5px !important;
+    }
+    
+    .card {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+</style>
