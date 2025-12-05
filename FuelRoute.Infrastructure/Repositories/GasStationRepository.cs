@@ -1,16 +1,41 @@
-using FuelRoute.Core.Entities;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using FuelRoute.Core.Models;
+using FuelRoute.Core.Interfaces;
+using Microsoft.Extensions.Hosting;
 
 namespace FuelRoute.Infrastructure.Repositories
 {
-    public class GasStationRepository
+    public class GasStationRepository : IGasStationRepository
     {
-        private readonly List<GasStation> _stations = new();
+        private readonly List<GasStation> _stations;
 
-        public IEnumerable<GasStation> GetAll() => _stations;
-
-        public void Add(GasStation station)
+        public GasStationRepository(IHostEnvironment env)
         {
-            _stations.Add(station);
+            // Primary path: ../FuelRoute.Infrastructure/Data/gasstations.json
+            var path = Path.Combine(env.ContentRootPath, "..", "FuelRoute.Infrastructure", "Data", "gasstations.json");
+            path = Path.GetFullPath(path);
+
+            // Fallback path: FuelRoute.API/Data/gasstations.json
+            if (!File.Exists(path))
+            {
+                var fallbackPath = Path.Combine(env.ContentRootPath, "Data", "gasstations.json");
+                fallbackPath = Path.GetFullPath(fallbackPath);
+
+                if (File.Exists(fallbackPath))
+                    path = fallbackPath;
+            }
+
+            var json = File.ReadAllText(path);
+
+            _stations = JsonSerializer.Deserialize<List<GasStation>>(json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? new List<GasStation>();
         }
+
+        public IReadOnlyList<GasStation> GetAll() => _stations;
     }
-} 
+}
